@@ -1,14 +1,7 @@
 ############### Librerias importadas ############### 
-from onlyFunction import *
+from funciones import *
 
 from pytube import Playlist
-
-
-print("Please Paste The URL of the youtube video")
-#urlUser = (input('\nWrite a url: '))
-print()
-#p = Playlist('https://www.youtube.com/playlist?list=PLWys0ZbXYUy7GYspoUPPsGzCu1bdgUdzf')
-
 
 x=1
 pedir = None
@@ -76,7 +69,7 @@ if mode == "Playlist":
         ####### Para no tener que pedir recurrentemente la opcion solo se preguntara la primera vez #####
         if (pedir is None):
             if formatChoice == 1:
-                video_resolutions, videos,itag  = sort_resolutions_OnlyAudio(video)
+                video_resolutions, videos,itag,abr  = sort_resolutions_OnlyAudio(video)
             else:
                 video_resolutions, videos = sort_resolutions_AudioandVideo(video)
             choice = pedirResolucion(video_resolutions, videos,x)
@@ -104,7 +97,7 @@ else:
     ####### Para no tener que pedir recurrentemente la opcion solo se preguntara la primera vez #####
         if (pedir is None):
             if formatChoice == 1:
-                video_resolutions, videos,itag  = sort_resolutions_OnlyAudio(urlUser)
+                video_resolutions, videos,itag,abr  = sort_resolutions_OnlyAudio(urlUser)
             else:
                 video_resolutions, videos = sort_resolutions_AudioandVideo(urlUser)
             choice = pedirResolucion(video_resolutions, videos,x)

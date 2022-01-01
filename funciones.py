@@ -58,12 +58,15 @@ def sort_resolutions_OnlyAudio(url):
     video_resolutions = []
     videos = []
     itag = []
+    abr = []
+
     for stream in my_video.streams.filter(only_audio=True):
         video_resolutions.append(stream.mime_type)
         videos.append(stream)
         itag.append(stream.itag)
-        print(f"{stream.mime_type} con una abr de {stream.abr}")
-    return video_resolutions, videos,itag
+        #print(f"{stream.mime_type} con una abr de {stream.abr}")
+        abr.append(stream.abr)
+    return video_resolutions, videos,itag,abr
 ################################################################
 ############### Descargar Video de la Playlist #################
 ################################################################
@@ -116,8 +119,12 @@ def existeCarpeta(path):
 import requests
 def existeDominio(url):
     checkURL = False
+    checker_url = "https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v="
+    partesURL = url.split("?v=")
     try:
         response = requests.get(url)
+        video_url = checker_url + partesURL[-1]
+        response = requests.get(video_url)
         if response.status_code == 200:
             print("URL is valid on the internet")
             checkURL = True
@@ -127,3 +134,4 @@ def existeDominio(url):
         checkURL = False
     finally:
         return checkURL   
+        
