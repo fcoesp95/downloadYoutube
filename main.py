@@ -9,25 +9,23 @@ pedir = None
 domain = False
 while domain == False:
             urlUser = (input('\nWrite a url: '))
-            checkURL = existeDominio(urlUser)    
-            if checkURL == False: 
-                print("That's not a valid URL. Try again")
-                domain = False     
-            else:
+            try:
+                p = Playlist(urlUser) 
+                if p.length >0:  
+                    domain = True
+                    print('Its a Playlist') 
+                    mode = "Playlist"
+            except:
+                print("That's not a playlist.")
                 try:
-                    p = Playlist(urlUser) 
-                    if p.length >0:  
-                        domain = True 
-                        mode = "Playlist"
-                except:
-                    print("That's not a playlist.")
-                    try:
+                    checkURL = existeDominio(urlUser)
+                    if checkURL == True:    
                         p = YouTube(urlUser)
-                        print("But its a video")
+                        print("Its a video")
                         domain = True
                         mode = "Video"
-                    except:
-                        print("That's not a video.")
+                except:
+                    print("That's not a video.")
 
 
 #p = Playlist(urlUser)
@@ -114,3 +112,4 @@ else:
             descargarVideo(video_resolutions,choiceS,x,urlUser,path)
 
         print()
+        print("Descarga finalizada")
