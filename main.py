@@ -10,22 +10,33 @@ domain = False
 while domain == False:
             urlUser = (input('\nWrite a url: '))
             try:
-                p = Playlist(urlUser) 
-                if p.length >0:  
+                checkURL = existeDominio(urlUser,0)
+                if checkURL == True:   
+                    p = Playlist(urlUser)
                     domain = True
                     print('Its a Playlist') 
                     mode = "Playlist"
-            except:
-                print("That's not a playlist.")
-                try:
-                    checkURL = existeDominio(urlUser)
+                else:
+                    checkURL = existeDominio(urlUser,1)
                     if checkURL == True:    
                         p = YouTube(urlUser)
                         print("Its a video")
                         domain = True
                         mode = "Video"
-                except:
-                    print("That's not a video.")
+                    else:
+                        print("That's not a video and not a playlist.")
+            except Exception as e:
+                print(e)
+                print("That's not a playlist.")
+                """try:
+                    checkURL = existeDominio(urlUser,1)
+                    if checkURL == True:    
+                        p = YouTube(urlUser)
+                        print("Its a video")
+                        domain = True
+                        mode = "Video"""
+                """except:
+                    print("That's not a video.")"""
 
 
 #p = Playlist(urlUser)

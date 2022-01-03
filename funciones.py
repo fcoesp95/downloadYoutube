@@ -117,21 +117,34 @@ def existeCarpeta(path):
 ############### Comprobar dominio de la url ####################
 ################################################################
 import requests
-def existeDominio(url):
+def existeDominio(url,value):
     checkURL = False
-    checker_url = "https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v="
-    partesURL = url.split("?v=")
-    try:
-        response = requests.get(url)
-        video_url = checker_url + partesURL[-1]
-        response = requests.get(video_url)
-        if response.status_code == 200:
-            print("URL is valid on the internet")
-            checkURL = True
-    except requests.ConnectionError as exception:
-        print("URL does not exist on Internet")
-        print(exception)
-        checkURL = False
-    finally:
-        return checkURL   
-        
+    checker_url_video = "https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v="
+    checker_url_playlist = "https://www.youtube.com/oembed?url=http://www.youtube.com/playlist?list="
+    partesURL = url.split("=")
+    if value == 0:
+        checker_url = checker_url_playlist
+    elif value == 1:
+        checker_url = checker_url_video
+    checkName = partesURL[0].startswith('https://www.youtube.com/')
+    if checkName == True:    
+        try:
+            response = requests.get(url)
+            video_url = checker_url + partesURL[-1]
+            print(video_url)
+            response = requests.get(video_url)
+            if response.status_code == 200:
+                print("URL is valid on the internet")
+                checkURL = True
+            else:
+                print("URL not valid on the internet")
+                checkURL = False    
+        except requests.ConnectionError as exception:
+            print("URL does not exist on Internet")
+            print(exception)
+            checkURL = False
+        finally:
+            return checkURL   
+    else:
+            print('Format not valid')
+            return checkURL    
