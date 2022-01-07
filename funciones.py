@@ -205,7 +205,6 @@ def existeDominio(url,value):
                 print("URL is valid on the internet")
                 checkURL = True
             else:
-                print("URL not valid on the internet")
                 checkURL = False    
         except requests.ConnectionError as exception:
             print("URL does not exist on Internet")
