@@ -40,8 +40,8 @@ while domain == False:
 
 
 #p = Playlist(urlUser)
-path = p.title
-existeCarpeta(path)
+txt = p.title
+path  = processString(txt)
 
 audioOvideo = False
 print("1. Only audio")
@@ -90,7 +90,7 @@ if mode == "Playlist":
         print()
 
         if formatChoice == 1:
-            descargarAudio(video_resolutions,choiceS,x,url,path,itag)
+            descargarAudio(video_resolutions,choiceS,x,url,path,itag,abr)
         else:
             descargarVideo(video_resolutions,choiceS,x,url,path)
 
@@ -118,7 +118,7 @@ else:
         print()
 
         if formatChoice == 1:
-            descargarAudio(video_resolutions,choiceS,x,urlUser,path,itag)
+            descargarAudio(video_resolutions,choiceS,x,urlUser,path,itag,abr)
         else:
             descargarVideo(video_resolutions,choiceS,x,urlUser,path)
 

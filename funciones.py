@@ -61,10 +61,10 @@ def sort_resolutions_OnlyAudio(url):
     abr = []
 
     for stream in my_video.streams.filter(only_audio=True):
-        video_resolutions.append(stream.mime_type)
+        auxiliar = stream.mime_type + " " + stream.abr
+        video_resolutions.append(auxiliar)
         videos.append(stream)
         itag.append(stream.itag)
-        #print(f"{stream.mime_type} con una abr de {stream.abr}")
         abr.append(stream.abr)
     return video_resolutions, videos,itag,abr
 ################################################################
@@ -72,27 +72,85 @@ def sort_resolutions_OnlyAudio(url):
 ################################################################
 def descargarVideo(video,choice,x,url,path):
     nuevoStream = "%s."% (x)
-    formato = video[choice]    
+    #formato = video[choice]    
 
     from pytube import YouTube
     downloader = "'"+url+"'"
     yt = YouTube(downloader,on_progress_callback=on_progress)
     print(f'El titulo es: {yt.title}')
-    yt.streams.filter(file_extension='mp4').get_by_resolution(formato).download(output_path=path,filename_prefix=nuevoStream)
+    nameVideo = "./" +path +"/"+path + "_video.txt"
+    
+    variable = choice
+    intentos = 0
+
+    
+
+    existeVideo = False
+    ######## Comprobar si ya esta el archivo descargado
+    if  os.path.exists(nameVideo):       
+        f = open(nameVideo, "r",encoding='utf-8')
+        for x in f:
+            if (yt.title +f" {video[variable]}").strip() ==  x.strip(): 
+                print(x.strip())
+                print(f'El video {yt.title} se ha descargado anteriormente')
+                existeVideo = True
+    while existeVideo != True:
+        formato = video[variable]
+        try:
+            yt.streams.filter(file_extension='mp4').get_by_resolution(formato).download(output_path=path,filename_prefix=nuevoStream)
+            
+            f = open(nameVideo, "a",encoding='utf-8')
+            f.write(yt.title +f" {video[variable]}"+"\n")
+            f.close()
+
+            existeVideo = True
+        except Exception as e:
+            intentos +=1
+        if(intentos >3):
+            intentos =0
+            variable -= 1
+    #yt.streams.filter(file_extension='mp4').get_by_resolution(formato).download(output_path=path,filename_prefix=nuevoStream)
 
 ################################################################
 ############### Descargar Audio de la Playlist #################
 ################################################################
-def descargarAudio(video,choice,x,url,path,itag):
+def descargarAudio(video,choice,x,url,path,itag,abr):
     nuevoStream = "%s."% (x)
-    formato = video[choice]    
     formatoItag = itag[choice]    
 
     from pytube import YouTube
     downloader = "'"+url+"'"
     yt = YouTube(downloader,on_progress_callback=on_progress)
     print(f'El titulo es: {yt.title}')
-    yt.streams.get_by_itag(formatoItag).download(output_path=path,filename_prefix=nuevoStream)
+
+    nameAudio = "./" +path +"/"+path + "_audio.txt"
+    
+    variable = choice
+    intentos = 0
+
+    existeAudio = False
+    ######## Comprobar si ya esta el archivo descargado
+    if  os.path.exists(nameAudio):       
+        f = open(nameAudio, "r",encoding='utf-8')
+        for x in f:
+            if (yt.title +f" {abr[variable]}").strip() ==  x.strip(): 
+                print(x.strip())
+                print(f'El video {yt.title} se ha descargado anteriormente')
+                existeAudio = True
+    while existeAudio != True:
+        formatoItag = itag[variable]
+        try:
+            yt.streams.get_by_itag(formatoItag).download(output_path=path,filename_prefix=nuevoStream)
+            
+            f = open(nameAudio, "a",encoding='utf-8')
+            f.write(yt.title +f" {abr[variable]}"+"\n")
+            f.close()
+            existeAudio = True
+        except Exception as e:
+            intentos +=1
+        if(intentos >3):
+            intentos =0
+            variable -= 1
 
 def elegirOpcion(video_resolutions,pedir):
     choiceS = ''
@@ -103,8 +161,19 @@ def elegirOpcion(video_resolutions,pedir):
         x +=1
     return choiceS
 
+
 ################################################################
-############### Crear carpeta si no existe #####################
+############### Cambiar caracteres #############################
+################################################################
+def processString(txt):
+  specialChars = '\/:*?"<>|' 
+  for specialChar in specialChars:
+    txt = txt.replace(specialChar, '')
+  existeCarpeta(txt)
+  return txt  
+
+################################################################
+############### Crear carpeta si no existe y el txt ############
 ################################################################
 import os
 def existeCarpeta(path):
@@ -131,7 +200,6 @@ def existeDominio(url,value):
         try:
             response = requests.get(url)
             video_url = checker_url + partesURL[-1]
-            print(video_url)
             response = requests.get(video_url)
             if response.status_code == 200:
                 print("URL is valid on the internet")
